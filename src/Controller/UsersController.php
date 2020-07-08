@@ -44,6 +44,7 @@ class UsersController extends AppController
     $user = $this->Users->get($id, [
       'contain' => [],
     ]);
+    $this->isCurrent_user($user);
 
     $this->set(compact('user'));
   }
@@ -80,6 +81,7 @@ class UsersController extends AppController
     $user = $this->Users->get($id, [
       'contain' => [],
     ]);
+    $this->isCurrent_user($user);
     if ($this->request->is(['patch', 'post', 'put'])) {
       $user = $this->Users->patchEntity($user, $this->request->getData());
       if ($this->Users->save($user)) {
@@ -103,8 +105,15 @@ class UsersController extends AppController
   {
     $this->request->allowMethod(['post', 'delete']);
     $user = $this->Users->get($id);
+    $session = $this->request->getSession();
+    $current_user = $session->read('Auth.id');
+    if ($user->id != $current_user) {
+      $this->Flash->error(__('This page forbiden'));
+      return $this->redirect(['action' => 'index']);
+    }
     if ($this->Users->delete($user)) {
       $this->Flash->success(__('The user has been deleted.'));
+      return $this->redirect(['action' => 'logout']);
     } else {
       $this->Flash->error(__('The user could not be deleted. Please, try again.'));
     }
@@ -139,6 +148,16 @@ class UsersController extends AppController
     if ($result->isValid()) {
       $this->Authentication->logout();
       return $this->redirect(['controller' => 'Users', 'action' => 'login']);
+    }
+  }
+
+  protected function isCurrent_user($user)
+  {
+    $session = $this->request->getSession();
+    $current_user = $session->read('Auth.id');
+    if ($user->id != $current_user) {
+      $this->Flash->error(__('This page forbiden'));
+      return $this->redirect(['action' => 'index']);
     }
   }
 }

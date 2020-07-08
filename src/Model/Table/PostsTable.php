@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Model\Table;
@@ -29,51 +30,58 @@ use Cake\Validation\Validator;
  */
 class PostsTable extends Table
 {
-    /**
-     * Initialize method
-     *
-     * @param array $config The configuration for the Table.
-     * @return void
-     */
-    public function initialize(array $config): void
-    {
-        parent::initialize($config);
+  /**
+   * Initialize method
+   *
+   * @param array $config The configuration for the Table.
+   * @return void
+   */
+  public function initialize(array $config): void
+  {
+    parent::initialize($config);
 
-        $this->setTable('posts');
-        $this->setDisplayField('title');
-        $this->setPrimaryKey('id');
+    $this->setTable('posts');
+    $this->setDisplayField('title');
+    $this->setPrimaryKey('id');
 
-        $this->addBehavior('Timestamp');
-    }
+    $this->addBehavior('Timestamp');
+    $this->belongsTo('Users');
+  }
 
-    /**
-     * Default validation rules.
-     *
-     * @param \Cake\Validation\Validator $validator Validator instance.
-     * @return \Cake\Validation\Validator
-     */
-    public function validationDefault(Validator $validator): Validator
-    {
-        $validator
-            ->integer('id')
-            ->allowEmptyString('id', null, 'create');
+  /**
+   * Default validation rules.
+   *
+   * @param \Cake\Validation\Validator $validator Validator instance.
+   * @return \Cake\Validation\Validator
+   */
+  public function validationDefault(Validator $validator): Validator
+  {
+    $validator
+      ->integer('id')
+      ->allowEmptyString('id', null, 'create');
 
-        $validator
-            ->scalar('title')
-            ->maxLength('title', 50)
-            ->requirePresence('title', 'create')
-            ->notEmptyString('title');
+    $validator
+      ->scalar('title')
+      ->maxLength('title', 50)
+      ->requirePresence('title', 'create')
+      ->notEmptyString('title');
 
-        $validator
-            ->scalar('description')
-            ->requirePresence('description', 'create')
-            ->notEmptyString('description');
+    $validator
+      ->scalar('description')
+      ->requirePresence('description', 'create')
+      ->notEmptyString('description');
 
-        $validator
-            ->scalar('body')
-            ->requirePresence('body', 'create')
-            ->notEmptyString('body');
+    $validator
+      ->scalar('body')
+      ->requirePresence('body', 'create')
+      ->notEmptyString('body');
 
-        return $validator;
-    }
+    $validator
+      ->integer('user_id')
+      ->maxlength('user_id', 11)
+      ->requirePresence('user_id', 'create')
+      ->notEmptyString('user_id');
+
+    return $validator;
+  }
 }

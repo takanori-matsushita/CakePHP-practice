@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Model\Table;
@@ -29,66 +30,69 @@ use Cake\Validation\Validator;
  */
 class UsersTable extends Table
 {
-    /**
-     * Initialize method
-     *
-     * @param array $config The configuration for the Table.
-     * @return void
-     */
-    public function initialize(array $config): void
-    {
-        parent::initialize($config);
+  /**
+   * Initialize method
+   *
+   * @param array $config The configuration for the Table.
+   * @return void
+   */
+  public function initialize(array $config): void
+  {
+    parent::initialize($config);
 
-        $this->setTable('users');
-        $this->setDisplayField('name');
-        $this->setPrimaryKey('id');
+    $this->setTable('users');
+    $this->setDisplayField('name');
+    $this->setPrimaryKey('id');
 
-        $this->addBehavior('Timestamp');
-    }
+    $this->addBehavior('Timestamp');
+    $this->hasMany('Posts', [
+      'dependent' => true
+    ]);
+  }
 
-    /**
-     * Default validation rules.
-     *
-     * @param \Cake\Validation\Validator $validator Validator instance.
-     * @return \Cake\Validation\Validator
-     */
-    public function validationDefault(Validator $validator): Validator
-    {
-        $validator
-            ->integer('id')
-            ->allowEmptyString('id', null, 'create');
+  /**
+   * Default validation rules.
+   *
+   * @param \Cake\Validation\Validator $validator Validator instance.
+   * @return \Cake\Validation\Validator
+   */
+  public function validationDefault(Validator $validator): Validator
+  {
+    $validator
+      ->integer('id')
+      ->allowEmptyString('id', null, 'create');
 
-        $validator
-            ->scalar('name')
-            ->maxLength('name', 50)
-            ->requirePresence('name', 'create')
-            ->notEmptyString('name');
+    $validator
+      ->scalar('name')
+      ->maxLength('name', 50)
+      ->requirePresence('name', 'create')
+      ->notEmptyString('name');
 
-        $validator
-            ->email('email')
-            ->requirePresence('email', 'create')
-            ->notEmptyString('email');
+    $validator
+      ->email('email')
+      ->requirePresence('email', 'create')
+      ->notEmptyString('email');
 
-        $validator
-            ->scalar('password')
-            ->maxLength('password', 50)
-            ->requirePresence('password', 'create')
-            ->notEmptyString('password');
+    $validator
+      ->scalar('password')
+      ->maxLength('password', 50)
+      ->requirePresence('password', 'create')
+      ->notEmptyString('password');
 
-        return $validator;
-    }
+    return $validator;
+  }
 
-    /**
-     * Returns a rules checker object that will be used for validating
-     * application integrity.
-     *
-     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
-     * @return \Cake\ORM\RulesChecker
-     */
-    public function buildRules(RulesChecker $rules): RulesChecker
-    {
-        $rules->add($rules->isUnique(['email']));
+  /**
+   * Returns a rules checker object that will be used for validating
+   * application integrity.
+   *
+   * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
+   * @return \Cake\ORM\RulesChecker
+   */
+  public function buildRules(RulesChecker $rules): RulesChecker
+  {
+    $rules->add($rules->isUnique(['email']));
 
-        return $rules;
-    }
+    return $rules;
+  }
 }

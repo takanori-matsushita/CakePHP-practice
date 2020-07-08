@@ -17,6 +17,8 @@
 
 $cakeDescription = 'CakePHP: the rapid development php framework';
 $this->loadHelper('Authentication.Identity');
+
+$user_id = $this->Identity->get('id');
 ?>
 <!DOCTYPE html>
 <html>
@@ -46,7 +48,10 @@ $this->loadHelper('Authentication.Identity');
     </div>
     <div class="top-nav-links">
       <?php if ($this->Identity->isLoggedIn()) : ?>
+        <a href="/posts"><?= __('Posts') ?></a>
+        <a href="/users/view/<?= $user_id; ?>"><?= __('Mypage') ?></a>
         <a href="/users/logout"><?= __('Logout') ?></a>
+        <span>Welcome <?= $this->Identity->get('name'); ?></span>
       <?php else : ?>
         <a href="/users/login"><?= __('Login') ?></a>
         <a href="/users/add"><?= __('Register') ?></a>
